@@ -4,9 +4,12 @@ export function initFluid() {
   const ctx = canvas.getContext('2d');
   let width, height;
 
+  const isMobile = window.innerWidth < 768;
   const particles = [];
-  const particleCount = 120;
+  const particleCount = isMobile ? 60 : 120;
   const mouse = { x: -100, y: -100, active: false };
+  const connLimitSq = 150 * 150;
+  const mouseDistSq = 300 * 300;
 
   function resize() {
     width = canvas.width = window.innerWidth;
@@ -37,9 +40,9 @@ export function initFluid() {
       if (mouse.active) {
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 300) {
-          const force = (300 - dist) / 3000;
+        const distSq = dx * dx + dy * dy;
+        if (distSq < mouseDistSq) {
+          const force = (300 - Math.sqrt(distSq)) / 3000;
           this.vx += dx * force;
           this.vy += dy * force;
         }
@@ -93,19 +96,21 @@ export function initFluid() {
     ctx.clearRect(0, 0, width, height);
     
     // Draw connections (Fluid look)
-    for (let i = 0; i < particles.length; i++) {
+    const len = particles.length;
+    for (let i = 0; i < len; i++) {
       const p1 = particles[i];
       p1.update();
       p1.draw();
 
-      for (let j = i + 1; j < particles.length; j++) {
+      for (let j = i + 1; j < len; j++) {
         const p2 = particles[j];
         const dx = p1.x - p2.x;
         const dy = p1.y - p2.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const dSq = dx * dx + dy * dy;
 
-        if (dist < 150) {
+        if (dSq < connLimitSq) {
           ctx.beginPath();
+          const dist = Math.sqrt(dSq);
           ctx.strokeStyle = `rgba(12, 209, 169, ${(150 - dist) / 1000})`; // Mint green connections
           ctx.lineWidth = 0.5;
           ctx.moveTo(p1.x, p1.y);

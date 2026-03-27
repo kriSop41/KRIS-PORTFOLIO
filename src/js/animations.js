@@ -145,15 +145,14 @@ export function setupAnimations(sceneController, animatedObjects) {
         }})
         // 2. Initialize the interactive fluid world
         .add(() => initFluid())
-        // 3. Open eye (reveal the and 'Wake Up' to the fluid world)
-        .add(() => blackoutOverlay.classList.add('eye-open'), "+=1.5")
-        // 4. Show thank you text on top of the fluid world
-        .to(thankyouScreen, { opacity: 1, duration: 2, delay: 1, onStart: () => thankyouScreen.classList.add('active') })
-        // 5. Final cinematic reveal: The eye stays open, allowing interaction
+        // 3. Open eye (faster reveal)
+        .add(() => blackoutOverlay.classList.add('eye-open'), "+=0.4")
+        // 4. Show thank you text on top of the fluid world (quicker fade in)
+        .to(thankyouScreen, { opacity: 1, duration: 1.5, delay: 0.2, onStart: () => thankyouScreen.classList.add('active') })
+        // 5. Final cinematic reveal: ready to interact
         .add(() => {
-          // Change cursor to something interactive or just leave it
           console.log("Fluid world active.");
-        }, "+=2");
+        }, "+=0.5");
     });
   }
 
