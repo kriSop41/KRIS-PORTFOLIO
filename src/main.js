@@ -1,4 +1,3 @@
-import './style.css';
 import { initScroll } from './js/app.js';
 import { initCursor } from './js/cursor.js';
 import { SceneController } from './js/three-scene.js';
@@ -43,4 +42,3 @@ if (document.readyState === 'loading') {
 } else {
   startApp();
 }
-
